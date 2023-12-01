@@ -19,16 +19,25 @@ const Login = () => {
     }));
   };
   const login = async () => {
-    const res = await axios.post(
-      "https://todolist-n0pq.onrender.com/user/login",
-      formData
-    );
-    console.log(res.data);
+    const res = await axios.post("http://localhost:2222/user/login", formData);
     return res;
   };
 
   const logInHandler = () => {
-    login().then(() => navigate("/home"));
+    login()
+      .then((res) => console.log(res))
+      .catch((err) => {
+        if (err.response) {
+          console.log(err.response.data.msg);
+        }
+        console.log(err);
+
+        return err;
+      })
+      .then((err) => {
+        if (err) return 1;
+        navigate("/home");
+      });
   };
   return (
     <div className="flex justify-center items-center text-white h-[93.5vh] md:h-[100vh] bg-white dark:bg-slate-700">
@@ -61,7 +70,7 @@ const Login = () => {
           <h2>
             New to this{"     "}{" "}
             <span
-              className="underline text-green-400"
+              className="underline text-green-400 cursor-pointer"
               onClick={() => navigate("/signup")}
             >
               Sign Up{" "}

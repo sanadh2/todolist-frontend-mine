@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./signUp.css";
 const Signup = () => {
@@ -7,6 +8,7 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const changeHandler = (e) => {
     setFormData((prev) => ({
@@ -15,15 +17,18 @@ const Signup = () => {
     }));
   };
   const signUp = async () => {
-    const options = JSON.stringify(formData);
-    console.log(formData);
     const res = await axios.post("http://localhost:2222/user/signUp", formData);
-    console.log(res.data);
     return res;
   };
 
   const signUpHandler = () => {
-    signUp().then(() => console.log("connected"));
+    signUp()
+      .then(navigate("/"))
+      .catch((err) => {
+        if (err.response && err.response.status === 401) {
+          console.log(err.response.data.msg);
+        }
+      });
   };
 
   const LoginDetails = () => {
@@ -76,7 +81,7 @@ const Signup = () => {
           <h2>
             New to this{"     "}
             <span
-              className="underline text-green-400"
+              className="underline text-green-400 cursor-pointer"
               onClick={() => navigate("/")}
             >
               Log in
